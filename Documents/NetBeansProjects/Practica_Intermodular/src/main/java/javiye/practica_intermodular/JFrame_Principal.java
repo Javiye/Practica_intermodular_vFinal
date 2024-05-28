@@ -1,8 +1,11 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package javiye.practica_intermodular;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -42,24 +45,24 @@ public class JFrame_Principal extends javax.swing.JFrame {
         TablaPlanetas = new javax.swing.JTable();
         selectorPlanetas = new javax.swing.JComboBox<>();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        tableSatelite = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel3.setFont(new java.awt.Font("Yu Gothic UI Light", 2, 10)); // NOI18N
         jLabel3.setText("Autor: Javier Yeguas Díaz");
 
-        TipoEstrella.setText("Tipo de estrella:");
+        TipoEstrella.setText("Tipo de estrella: ");
 
-        Radio.setText("Radio:");
+        Radio.setText("Radio: ");
 
-        Temperatura.setText("Temperatura:");
+        Temperatura.setText("Temperatura: ");
 
-        Distancia.setText("Distancia:");
+        Distancia.setText("Distancia: ");
 
-        Composicion.setText("Composicion:");
+        Composicion.setText("Composicion: ");
 
-        Estrella.setText("Estrella:");
+        Estrella.setText("Nombre de la estrella: ");
 
         Boton1.setText("Ver detalles");
         Boton1.addActionListener(new java.awt.event.ActionListener() {
@@ -125,9 +128,6 @@ public class JFrame_Principal extends javax.swing.JFrame {
 
         TablaPlanetas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
                 {null, null, null, null, null, null, null}
             },
             new String [] {
@@ -143,7 +143,7 @@ public class JFrame_Principal extends javax.swing.JFrame {
             }
         });
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        tableSatelite.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null},
                 {null, null, null, null, null, null, null},
@@ -154,7 +154,7 @@ public class JFrame_Principal extends javax.swing.JFrame {
                 "Nombre", "Planeta", "Radio", "Distancia", "P. Orbitario", "Temperatura", "Tipo"
             }
         ));
-        jScrollPane2.setViewportView(jTable2);
+        jScrollPane2.setViewportView(tableSatelite);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -203,41 +203,91 @@ public class JFrame_Principal extends javax.swing.JFrame {
 
     private void selectorPlanetasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectorPlanetasActionPerformed
 
-        String planeta = "" + selectorPlanetas.getSelectedItem();
+// Obtener el nombre del planeta seleccionado
+    String nombrePlaneta = (String) selectorPlanetas.getSelectedItem();
 
-        Conexion_A_BBDD conexion = new Conexion_A_BBDD();
-        conexion.conectarConsultaPlaneta(planeta);
-        //conexion.conectarConsultaMarte();
+    // Crear una instancia de la clase ConexionBBDD
+    ConexionBBDD conexion = new ConexionBBDD();
 
-        String[] datosplaneta = conexion.conectarConsultaPlaneta(planeta);
-        TablaPlanetas.setValueAt(datosplaneta[0], 0, 0);
-        TablaPlanetas.setValueAt(datosplaneta[1], 0, 1);
-        TablaPlanetas.setValueAt(datosplaneta[2], 0, 2);
-        TablaPlanetas.setValueAt(datosplaneta[3], 0, 3);
-        TablaPlanetas.setValueAt(datosplaneta[4], 0, 4);
-        TablaPlanetas.setValueAt(datosplaneta[5], 0, 5);
-        TablaPlanetas.setValueAt(datosplaneta[6], 0, 6);
+    // Obtener los datos del planeta y sus satélites
+    Planeta planeta = conexion.obtenerDatosPlanetaConSatelites(nombrePlaneta);
+
+    // Actualizar los valores en la tabla de planetas
+    TablaPlanetas.setValueAt(planeta.getRadio(), 0, 0);
+    TablaPlanetas.setValueAt(planeta.getDistancia(), 0, 1);
+    TablaPlanetas.setValueAt(planeta.getPeriodo(), 0, 2);
+    TablaPlanetas.setValueAt(planeta.getTipo(), 0, 3);
+    TablaPlanetas.setValueAt(planeta.getTemperatura(), 0, 4);
+    TablaPlanetas.setValueAt(planeta.getNumSatelites(), 0, 5);
+    TablaPlanetas.setValueAt(planeta.getFechaCreacion(), 0, 6);
+
+    // Limpiar la tabla de satélites
+    for (int i = 0; i < tableSatelite.getRowCount(); i++) {
+        for (int j = 0; j < tableSatelite.getColumnCount(); j++) {
+            tableSatelite.setValueAt("", i, j);
+        }
+    }
+
+    // Actualizar los valores en la tabla de satélites si existen
+    int fila = 0;
+    for (Satelite satelite : planeta.getSatelites()) {
+        tableSatelite.setValueAt(satelite.getNombre(), fila, 0);
+        tableSatelite.setValueAt(satelite.getRadio(), fila, 1);
+        tableSatelite.setValueAt(satelite.getDistancia(), fila, 2);
+        tableSatelite.setValueAt(satelite.getPeriodo(), fila, 3);
+        tableSatelite.setValueAt(satelite.getTemperatura(), fila, 4);
+        tableSatelite.setValueAt(satelite.getTipo(), fila, 5);
+        tableSatelite.setValueAt(satelite.getFechaCreacion(), fila, 6);
+        fila++;
+    }
+
+    // Mostrar la tabla de satélites si tiene datos
+    tableSatelite.setVisible(fila > 0);
+    //tableSatelite.setVisible(false);
 
     }//GEN-LAST:event_selectorPlanetasActionPerformed
 
     private void Boton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Boton1ActionPerformed
-        String nombreEstrella = Estrella.getText();
-        Estrella.setText(nombreEstrella + "SOL");
+        
+        /* YA QUE SÓLO EXISTE UNA ESTRELLA Y EL ENUNCIADO ESPECIFICA QUE ESA INFORMACIÓN ES FIJA
+        En vez de crear una clase con sus respectivos métodos, concateno la información que ya existía en JLABEL para mostrar la información del sol.
+        
+         */
+        
+        // Verificar si el botón ya ha sido presionado
+        boolean botonPresionado = Boton1.isSelected();
 
-        String tipoEstrellaActual = TipoEstrella.getText();
-        TipoEstrella.setText(tipoEstrellaActual + "G2V");
+        if (!botonPresionado) {
+            // Obtener la información y actualizar los campos de texto
+            String nombreEstrella = Estrella.getText();
+            Estrella.setText(nombreEstrella + "SOL");
 
-        String radioActual = Radio.getText();
-        Radio.setText(radioActual + " 696340 KM");
+            String tipoEstrellaActual = TipoEstrella.getText();
+            TipoEstrella.setText(tipoEstrellaActual + "G2V");
 
-        String temperaturaActual = Temperatura.getText();
-        Temperatura.setText(temperaturaActual + " 5500");
+            String radioActual = Radio.getText();
+            Radio.setText(radioActual + " 696340 KM");
 
-        String distanciaActual = Distancia.getText();
-        Distancia.setText(distanciaActual + " 149,6");
+            String temperaturaActual = Temperatura.getText();
+            Temperatura.setText(temperaturaActual + " 5500");
 
-        String composicionActual = Composicion.getText();
-        Composicion.setText(composicionActual + " 74% Hidrógeno, 24% Helio, 2% Otros");
+            String distanciaActual = Distancia.getText();
+            Distancia.setText(distanciaActual + " 149,6");
+
+            String composicionActual = Composicion.getText();
+            Composicion.setText(composicionActual + " 74% Hidrógeno, 24% Helio, 2% Otros");
+            
+            JOptionPane.showMessageDialog(this, "EL ENUNCIADO ESPECIFICA QUE ESA INFORMACIÓN ES FIJA."); 
+
+
+            // Deshabilitar el botón
+            Boton1.setEnabled(false);
+            botonPresionado = true;
+        } else {
+            // El botón ya ha sido presionado, no hacer nada
+            JOptionPane.showMessageDialog(this, "El botón ya ha sido presionado."); 
+            //No se debería tener opción a este mensaje en teoría
+        }
     }//GEN-LAST:event_Boton1ActionPerformed
 
     /**
@@ -254,16 +304,24 @@ public class JFrame_Principal extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(JFrame_Principal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(JFrame_Principal.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(JFrame_Principal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(JFrame_Principal.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(JFrame_Principal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(JFrame_Principal.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(JFrame_Principal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(JFrame_Principal.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
@@ -291,7 +349,7 @@ public class JFrame_Principal extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable2;
     private javax.swing.JComboBox<String> selectorPlanetas;
+    private javax.swing.JTable tableSatelite;
     // End of variables declaration//GEN-END:variables
 }
