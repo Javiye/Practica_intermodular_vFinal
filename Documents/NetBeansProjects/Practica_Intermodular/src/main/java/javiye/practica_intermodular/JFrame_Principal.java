@@ -48,6 +48,7 @@ public class JFrame_Principal extends javax.swing.JFrame {
         tableSatelite = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(0, 153, 204));
 
         jLabel3.setFont(new java.awt.Font("Yu Gothic UI Light", 2, 10)); // NOI18N
         jLabel3.setText("Autor: Javier Yeguas Díaz");
@@ -151,7 +152,7 @@ public class JFrame_Principal extends javax.swing.JFrame {
                 {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Nombre", "Planeta", "Radio", "Distancia", "P. Orbitario", "Temperatura", "Tipo"
+                "Nombre", "Radio", "Distancia", "P. Orbitario", "Temperatura", "Tipo", "Fecha_Creación"
             }
         ));
         jScrollPane2.setViewportView(tableSatelite);
@@ -163,9 +164,8 @@ public class JFrame_Principal extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel3)
-                        .addComponent(Titulo, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel3)
+                    .addComponent(Titulo, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -285,8 +285,8 @@ public class JFrame_Principal extends javax.swing.JFrame {
             botonPresionado = true;
         } else {
             // El botón ya ha sido presionado, no hacer nada
-            JOptionPane.showMessageDialog(this, "El botón ya ha sido presionado."); 
-            //No se debería tener opción a este mensaje en teoría
+            JOptionPane.showMessageDialog(this, "El botón ya ha sido presionado..."); 
+            //No debería en teoría tener opción a este mensaje...
         }
     }//GEN-LAST:event_Boton1ActionPerformed
 
